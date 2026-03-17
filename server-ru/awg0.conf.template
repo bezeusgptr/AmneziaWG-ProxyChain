@@ -1,0 +1,26 @@
+# Конфигурация интерфейса (Сервер РФ)
+[Interface]
+PrivateKey = ${SERVER_PRIV_KEY}
+Address = 10.8.0.1/24
+ListenPort = 51820
+
+# AmneziaWG маскировка для обхода DPI
+Jc = 4
+Jmin = 50
+Jmax = 1000
+S1 = 80
+S2 = 120
+H1 = 1
+H2 = 2
+H3 = 3
+H4 = 4
+
+# Настройка NAT и маршрутизации (чтобы трафик уходил в сервер Армении, а не напрямую)
+# Если мы используем awg1 для связи с Арменией, эти правила будут перенаправлять трафик туда
+PostUp = iptables -A FORWARD -i awg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i awg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# Пир (Клиент)
+#[Peer]
+#PublicKey = <КЛЮЧ_КЛИЕНТА>
+#AllowedIPs = 10.8.0.2/32
