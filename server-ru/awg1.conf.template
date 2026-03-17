@@ -1,0 +1,24 @@
+# Конфигурация интерфейса awg1 (Сервер РФ -> Сервер Армения)
+[Interface]
+PrivateKey = ${SERVER_PRIV_KEY}
+Address = 10.9.0.2/24
+
+# Использование кастомной таблицы маршрутизации для трафика, который пойдет в этот туннель
+Table = 100
+
+[Peer]
+PublicKey = ${AM_PUB_KEY}
+Endpoint = ${AM_ENDPOINT}:51820
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25
+
+# AmneziaWG маскировка
+Jc = 4
+Jmin = 50
+Jmax = 1000
+S1 = 80
+S2 = 120
+H1 = 1
+H2 = 2
+H3 = 3
+H4 = 4

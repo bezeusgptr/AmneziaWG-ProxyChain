@@ -15,10 +15,7 @@ H2 = 2
 H3 = 3
 H4 = 4
 
-# Настройка NAT и маршрутизации (чтобы трафик уходил в сервер Армении, а не напрямую)
-# Если мы используем awg1 для связи с Арменией, эти правила будут перенаправлять трафик туда
-PostUp = iptables -A FORWARD -i awg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i awg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+# Настройка NAT и маршрутизации обрабатывается в entrypoint.sh
 
 # Пир (Клиент)
 #[Peer]

@@ -18,8 +18,8 @@ RUN git clone https://github.com/amnezia-vpn/amneziawg-tools.git /awg-tools && \
 # Финальный легковесный образ
 FROM alpine:3.19
 
-# Установка iptables и сетевых утилит
-RUN apk add --no-cache iptables bash iproute2 openresolv gettext
+# Установка iptables, сетевых утилит, curl и ipset для выборочной маршрутизации
+RUN apk add --no-cache iptables ipset curl bash iproute2 openresolv gettext
 
 # Перенос бинарных файлов из builder'а
 COPY --from=builder /usr/bin/amneziawg-go /usr/bin/amneziawg-go
