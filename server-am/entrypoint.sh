@@ -5,7 +5,9 @@ mkdir -p /etc/amnezia/amneziawg
 
 if [ ! -f /etc/amnezia/amneziawg/server_private_key ]; then
     echo "Generating new server keys for AM node..."
+    umask 077
     awg genkey | tee /etc/amnezia/amneziawg/server_private_key | awg pubkey > /etc/amnezia/amneziawg/server_public_key
+    chmod 600 /etc/amnezia/amneziawg/server_private_key
 fi
 
 SERVER_PRIV_KEY=$(cat /etc/amnezia/amneziawg/server_private_key)

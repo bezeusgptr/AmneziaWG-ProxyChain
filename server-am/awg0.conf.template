@@ -20,6 +20,6 @@ PostUp = iptables -A FORWARD -i awg0 -j ACCEPT; iptables -t nat -A POSTROUTING -
 PostDown = iptables -D FORWARD -i awg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 # Пир (Сервер РФ)
-#[Peer]
-#PublicKey = <КЛЮЧ_СЕРВЕРА_РФ>
-#AllowedIPs = 10.9.0.2/32
+[Peer]
+PublicKey = ${RU_PUB_KEY}
+AllowedIPs = 10.9.0.2/32

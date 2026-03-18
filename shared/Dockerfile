@@ -3,14 +3,15 @@ FROM golang:1.22-alpine AS builder
 # Установка зависимостей для сборки
 RUN apk add --no-cache make gcc musl-dev git linux-headers
 
-# Сборка amneziawg-go (userspace реализация)
+# Сборка amneziawg-go (userspace реализация) — пинним конкретный коммит для воспроизводимости
 RUN git clone https://github.com/amnezia-vpn/amneziawg-go.git /awg-go && \
     cd /awg-go && \
+    git checkout 449d7cffd4adf86971bd679d0be5384b443e8be5 && \
     make && \
     cp amneziawg-go /usr/bin/amneziawg-go
 
-# Сборка amneziawg-tools (утилиты awg и awg-quick)
-RUN git clone https://github.com/amnezia-vpn/amneziawg-tools.git /awg-tools && \
+# Сборка amneziawg-tools (утилиты awg и awg-quick) — пинним тег
+RUN git clone --branch v1.0.20260223 --depth 1 https://github.com/amnezia-vpn/amneziawg-tools.git /awg-tools && \
     cd /awg-tools/src && \
     make && \
     make install
@@ -29,7 +30,5 @@ COPY --from=builder /usr/bin/awg-quick /usr/bin/awg-quick
 # Рабочая директория для конфигураций
 WORKDIR /etc/amnezia/amneziawg
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
+# entrypoint.sh монтируется через volume в docker-compose.yml
 ENTRYPOINT ["/entrypoint.sh"]
