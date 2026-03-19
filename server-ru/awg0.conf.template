@@ -17,7 +17,27 @@ H4 = 4
 
 # Настройка NAT и маршрутизации обрабатывается в entrypoint.sh
 
-# Пир (Клиент)
+# Слот 1 (Клиент)
 [Peer]
 PublicKey = ${CLIENT_PUB_KEY}
 AllowedIPs = 10.8.0.2/32
+
+# Слот 2 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT2_PUB_KEY}
+AllowedIPs = 10.8.0.3/32
+
+# Слот 3 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT3_PUB_KEY}
+AllowedIPs = 10.8.0.4/32
+
+# Слот 4 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT4_PUB_KEY}
+AllowedIPs = 10.8.0.5/32
+
+# Слот 5 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT5_PUB_KEY}
+AllowedIPs = 10.8.0.6/32
