@@ -23,6 +23,22 @@ wait_for_key() {
     return 1
 }
 
+# Проверка реального поднятия интерфейса awg0
+wait_for_interface() {
+    local container="$1"
+    local interface="$2"
+    local max_attempts=30
+    for i in $(seq 1 $max_attempts); do
+        if docker exec "$container" ip link show "$interface" >/dev/null 2>&1; then
+            return 0
+        fi
+        echo "  Waiting for $container to bring up $interface... ($i/$max_attempts)"
+        sleep 1
+    done
+    echo "ERROR: Timeout waiting for interface $interface on $container. Tunnel failed to start!"
+    return 1
+}
+
 wait_for_key awg-ru
 wait_for_key awg-am
 
@@ -49,9 +65,9 @@ echo "Injecting keys and restarting containers..."
 # Устанавливаем AM_PUB_KEY для сервера РФ и RU_PUB_KEY для сервера Армении
 AM_PUB_KEY="$AM_KEY" RU_PUB_KEY="$RU_KEY" docker compose up -d
 
-echo "Waiting for containers to restart with new keys..."
-wait_for_key awg-ru
-wait_for_key awg-am
+echo "Waiting for containers to restart with new configuration..."
+wait_for_interface awg-ru awg0
+wait_for_interface awg-am awg0
 
 echo "========================================="
 echo "Proxy chain is UP."

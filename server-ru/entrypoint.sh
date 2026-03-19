@@ -29,8 +29,8 @@ ipset create ru_subnets hash:net 2>/dev/null || ipset flush ru_subnets
 
 RU_CIDR_URL="https://raw.githubusercontent.com/herrbischoff/country-ip-blocks/master/ipv4/ru.cidr"
 if curl --max-time 30 --connect-timeout 10 -sSL "$RU_CIDR_URL" -o /tmp/ru.cidr; then
-    # Валидация: проверяем, что файл содержит CIDR-записи
-    if grep -qP '^\d+\.\d+\.\d+\.\d+/\d+$' /tmp/ru.cidr; then
+    # Валидация: проверяем, что файл содержит CIDR-записи (используем POSIX ERE для alpine busybox)
+    if grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$' /tmp/ru.cidr; then
         sed -e 's/^/add ru_subnets /' /tmp/ru.cidr | ipset restore -! || echo "WARNING: Failed to load some ru subnets"
     else
         echo "ERROR: Downloaded file does not contain valid CIDR data"

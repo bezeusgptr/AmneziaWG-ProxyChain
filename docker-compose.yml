@@ -15,10 +15,10 @@ services:
       - server-ru-keys:/etc/amnezia/amneziawg
     environment:
       # Эти параметры должны быть заполнены публичным ключом сервера Армении
-      - AM_PUB_KEY=
+      - AM_PUB_KEY
       - AM_ENDPOINT=10.0.0.3
       # Ключ клиента для Peer-секции awg0
-      - CLIENT_PUB_KEY=
+      - CLIENT_PUB_KEY
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -47,7 +47,7 @@ services:
       - server-am-keys:/etc/amnezia/amneziawg
     environment:
       # Ключ Сервера РФ для Peer-секции awg0
-      - RU_PUB_KEY=
+      - RU_PUB_KEY
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
