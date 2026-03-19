@@ -18,19 +18,27 @@ export SERVER_PRIV_KEY
 # Подстановка переменных окружения в шаблон конфига awg0
 envsubst < /config/awg0.conf.template > /etc/amnezia/amneziawg/awg0.conf
 
+# Удаляем секции [Peer], если PublicKey остался пустым
+sed -i '/^\[Peer\]/{N;/\nPublicKey = *$/{N;d;}}' /etc/amnezia/amneziawg/awg0.conf
+sed -i '/^\[Peer\]/{N;/\nPublicKey = *$/d;}' /etc/amnezia/amneziawg/awg0.conf
+sed -i '/^PublicKey = *$/d' /etc/amnezia/amneziawg/awg0.conf
+
 # Если задан ключ Сервера Армении, генерируем конфиг awg1
 if [ -n "$AM_PUB_KEY" ] && [ -n "$AM_ENDPOINT" ]; then
     echo "AM_PUB_KEY and AM_ENDPOINT provided. Generating awg1 configuration..."
     envsubst < /config/awg1.conf.template > /etc/amnezia/amneziawg/awg1.conf
+    sed -i '/^\[Peer\]/{N;/\nPublicKey = *$/{N;d;}}' /etc/amnezia/amneziawg/awg1.conf
+    sed -i '/^\[Peer\]/{N;/\nPublicKey = *$/d;}' /etc/amnezia/amneziawg/awg1.conf
+    sed -i '/^PublicKey = *$/d' /etc/amnezia/amneziawg/awg1.conf
 fi
 
 echo "Downloading RU subnets..."
 ipset create ru_subnets hash:net 2>/dev/null || ipset flush ru_subnets
 
-RU_CIDR_URL="https://raw.githubusercontent.com/herrbischoff/country-ip-blocks/master/ipv4/ru.cidr"
+RU_CIDR_URL="https://www.ipdeny.com/ipblocks/data/countries/ru.zone"
 if curl --max-time 30 --connect-timeout 10 -sSL "$RU_CIDR_URL" -o /tmp/ru.cidr; then
-    # Валидация: проверяем, что файл содержит CIDR-записи (используем POSIX ERE для alpine busybox)
-    if grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$' /tmp/ru.cidr; then
+    # Валидация: проверяем, что файл содержит CIDR-записи (используем POSIX ERE для alpine busybox, учитываем \r)
+    if grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+[[:space:]]*$' /tmp/ru.cidr; then
         sed -e 's/^/add ru_subnets /' /tmp/ru.cidr | ipset restore -! || echo "WARNING: Failed to load some ru subnets"
     else
         echo "ERROR: Downloaded file does not contain valid CIDR data"
@@ -46,8 +54,14 @@ echo "Configuring iptables for Selective Routing..."
 iptables -t mangle -F PREROUTING 2>/dev/null || true
 iptables -t nat -F POSTROUTING 2>/dev/null || true
 
+# Создаем список приватных сетей
+ipset create private_subnets hash:net 2>/dev/null || ipset flush private_subnets
+ipset add private_subnets 10.0.0.0/8 2>/dev/null || true
+ipset add private_subnets 172.16.0.0/12 2>/dev/null || true
+ipset add private_subnets 192.168.0.0/16 2>/dev/null || true
+
 # Маркируем пакеты от клиента (awg0), которые идут НЕ в российские подсети и НЕ к приватным адресам
-iptables -t mangle -A PREROUTING -i awg0 -m set ! --match-set ru_subnets dst ! -d 10.0.0.0/8 ! -d 172.16.0.0/12 ! -d 192.168.0.0/16 -j MARK --set-mark 1
+iptables -t mangle -A PREROUTING -i awg0 -m set ! --match-set ru_subnets dst -m set ! --match-set private_subnets dst -j MARK --set-mark 1
 
 # Настраиваем NAT для трафика, уходящего в интернет напрямую с Сервера РФ (российские IP)
 iptables -t nat -A POSTROUTING -o eth0 -m set --match-set ru_subnets dst -j MASQUERADE

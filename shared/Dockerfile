@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 # Установка зависимостей для сборки
 RUN apk add --no-cache make gcc musl-dev git linux-headers
@@ -14,7 +14,7 @@ RUN git clone https://github.com/amnezia-vpn/amneziawg-go.git /awg-go && \
 RUN git clone --branch v1.0.20260223 --depth 1 https://github.com/amnezia-vpn/amneziawg-tools.git /awg-tools && \
     cd /awg-tools/src && \
     make && \
-    make install
+    make WITH_WGQUICK=yes install
 
 # Финальный легковесный образ
 FROM alpine:3.19
