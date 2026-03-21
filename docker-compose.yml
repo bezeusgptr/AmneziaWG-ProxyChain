@@ -25,6 +25,8 @@ services:
       - CLIENT3_PUB_KEY
       - CLIENT4_PUB_KEY
       - CLIENT5_PUB_KEY
+      - CLIENT6_PUB_KEY
+      - CLIENT7_PUB_KEY
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1

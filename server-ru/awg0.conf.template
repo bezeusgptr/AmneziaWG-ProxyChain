@@ -41,3 +41,14 @@ AllowedIPs = 10.8.0.5/32
 [Peer]
 PublicKey = ${CLIENT5_PUB_KEY}
 AllowedIPs = 10.8.0.6/32
+
+# Слот 6 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT6_PUB_KEY}
+AllowedIPs = 10.8.0.7/32
+
+# Слот 7 (Дополнительный клиент)
+[Peer]
+PublicKey = ${CLIENT7_PUB_KEY}
+AllowedIPs = 10.8.0.8/32
+
