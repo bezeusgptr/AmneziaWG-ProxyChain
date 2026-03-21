@@ -52,3 +52,13 @@ AllowedIPs = 10.8.0.7/32
 PublicKey = ${CLIENT7_PUB_KEY}
 AllowedIPs = 10.8.0.8/32
 
+# Слот 8 (Tersa_mobile)
+[Peer]
+PublicKey = ${CLIENT8_PUB_KEY}
+AllowedIPs = 10.8.0.9/32
+
+# Слот 9 (Grox_mobile)
+[Peer]
+PublicKey = ${CLIENT9_PUB_KEY}
+AllowedIPs = 10.8.0.10/32
+
