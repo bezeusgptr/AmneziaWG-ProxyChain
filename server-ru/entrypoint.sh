@@ -66,7 +66,15 @@ iptables -t mangle -A PREROUTING -i awg0 -m set ! --match-set ru_subnets dst -m 
 # Настраиваем NAT для трафика, уходящего в интернет напрямую с Сервера РФ (российские IP)
 iptables -t nat -A POSTROUTING -o eth0 -m set --match-set ru_subnets dst -j MASQUERADE
 
+# Разрешаем FORWARD-трафик для интерфейсов после перевода в network_mode: host
+iptables -I FORWARD 1 -i awg0 -j ACCEPT 2>/dev/null || true
+iptables -I FORWARD 1 -o awg0 -j ACCEPT 2>/dev/null || true
+iptables -I FORWARD 1 -i awg1 -j ACCEPT 2>/dev/null || true
+iptables -I FORWARD 1 -o awg1 -j ACCEPT 2>/dev/null || true
+
 echo "Starting awg-quick on awg0..."
+ip link delete awg0 2>/dev/null || true
+ip link delete awg1 2>/dev/null || true
 env WG_QUICK_USERSPACE_IMPLEMENTATION=amneziawg-go awg-quick up awg0
 
 if [ -f /etc/amnezia/amneziawg/awg1.conf ]; then

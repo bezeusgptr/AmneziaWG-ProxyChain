@@ -16,6 +16,7 @@ export SERVER_PRIV_KEY
 envsubst < /config/awg0.conf.template > /etc/amnezia/amneziawg/awg0.conf
 
 echo "Starting awg-quick on awg0 for AM node..."
+ip link delete awg0 2>/dev/null || true
 env WG_QUICK_USERSPACE_IMPLEMENTATION=amneziawg-go awg-quick up awg0
 
 echo "Tailing logs..."
