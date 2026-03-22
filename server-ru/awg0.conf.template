@@ -63,3 +63,7 @@ AllowedIPs = 10.8.0.9/32
 PublicKey = ${CLIENT9_PUB_KEY}
 AllowedIPs = 10.8.0.10/32
 
+# Слот 10 (Rostov_home)
+[Peer]
+PublicKey = ${CLIENT10_PUB_KEY}
+AllowedIPs = 10.8.0.11/32

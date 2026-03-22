@@ -28,6 +28,7 @@ services:
       - CLIENT7_PUB_KEY
       - CLIENT8_PUB_KEY
       - CLIENT9_PUB_KEY
+      - CLIENT10_PUB_KEY
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "awg", "show", "awg0"]
