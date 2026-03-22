@@ -3,6 +3,7 @@
 PrivateKey = ${SERVER_PRIV_KEY}
 Address = 10.8.0.1/24
 ListenPort = 51820
+MTU = 1280
 
 # AmneziaWG маскировка для обхода DPI
 Jc = 4
