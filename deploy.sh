@@ -4,7 +4,7 @@ set -e
 # Скрипт для автоматического поднятия всех сервисов с обменом ключами
 echo "Starting AmneziaWG Proxy Chain..."
 
-docker compose up -d
+docker compose --profile ru --profile am up -d
 
 echo "Waiting for containers to generate keys..."
 
@@ -63,7 +63,7 @@ echo "----------------------------------------"
 echo "Injecting keys and restarting containers..."
 
 # Устанавливаем AM_PUB_KEY для сервера РФ и RU_PUB_KEY для сервера Армении
-AM_PUB_KEY="$AM_KEY" RU_PUB_KEY="$RU_KEY" docker compose up -d
+AM_PUB_KEY="$AM_KEY" RU_PUB_KEY="$RU_KEY" docker compose --profile ru --profile am up -d
 
 echo "Waiting for containers to restart with new configuration..."
 wait_for_interface awg-ru awg0

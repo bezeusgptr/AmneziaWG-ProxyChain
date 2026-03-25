@@ -1,5 +1,7 @@
 services:
   server-ru:
+    profiles:
+      - ru
     build:
       context: .
       dockerfile: shared/Dockerfile
@@ -37,6 +39,8 @@ services:
       retries: 3
 
   server-am:
+    profiles:
+      - am
     build:
       context: .
       dockerfile: shared/Dockerfile
